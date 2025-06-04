@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社群連結 App - Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            /* Light gray background for the body */
+        }
+
+        .hero-bg {
+            background: linear-gradient(to right, #667eea, #764ba2);
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover:not(.profile-header-card) {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background-color: #5a67d8;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #4c51bf;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #2d3748;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e0;
+        }
+
+        .nav-link {
+            color: #4a5568;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .nav-link:hover {
+            background-color: #edf2f7;
+            color: #2d3748;
+        }
+
+        .active-nav-link {
+            background-color: #5a67d8;
+            color: white !important;
+        }
+
+        .tag {
+            background-color: #e2e8f0;
+            color: #4a5568;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            margin-top: 0.25rem;
+            display: block;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d2d6dc;
+            /* gray-300 */
+            border-radius: 0.375rem;
+            /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            /* shadow-sm */
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #5a67d8;
+            /* indigo-500 */
+            box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.3);
+            /* ring-indigo-500 with opacity */
+        }
+
+        .profile-cover {
+            height: 250px;
+            /* Adjust as needed */
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            margin-top: -75px;
+            /* Half of avatar height to overlap cover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-nav-link {
+            padding: 10px 16px;
+            font-weight: 500;
+            color: #4a5568;
+            /* gray-700 */
+            border-bottom: 3px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .profile-nav-link:hover {
+            color: #5a67d8;
+            /* indigo-600 */
+        }
+
+        .profile-nav-link.active {
+            color: #5a67d8;
+            /* indigo-600 */
+            border-bottom-color: #5a67d8;
+            /* indigo-600 */
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky bottom-0 md:top-0 md:bottom-auto z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <!-- Brand / Logo -->
+            <a href="#home" class="text-2xl font-bold text-indigo-600 flex items-center nav-link" data-page="home">
+                <i class="fas fa-users mr-2"></i><span class="hidden md:inline">社群連結</span>
+            </a>
+            <!-- Navigation Links -->
+            <div class="flex space-x-1 md:space-x-2 lg:space-x-4 items-center">
+                <!-- Home -->
+                <a class="nav-link" data-page="home">
+                    <i class="fas fa-home block md:hidden text-lg"></i>
+                    <span class="hidden md:inline">首頁</span>
+                </a>
+                <!-- Browse -->
+                <a class="nav-link" data-page="browse">
+                    <i class="fas fa-search block md:hidden text-lg"></i>
+                    <span class="hidden md:inline">瀏覽社群</span>
+                </a>
+                <!-- Example
+                <a class="nav-link" data-page="community-example">
+                    <i class="fas fa-th-large block md:hidden text-lg"></i>
+                    <span class="hidden md:inline">社群範例</span>
+                </a> -->
+                <!-- Profile -->
+                <a class="nav-link" data-page="profile">
+                    <i class="fas fa-user block md:hidden text-lg"></i>
+                    <span class="hidden md:inline">個人主頁</span>
+                </a>
+                <!-- Register -->
+                <a class="nav-link btn-secondary flex items-center justify-center" data-page="register">
+                    <i class="fas fa-user-plus block md:hidden text-lg"></i>
+                    <span class="hidden md:inline">註冊</span>
+                </a>
+                <!-- Login -->
+                <a class="nav-link btn-primary flex items-center justify-center" data-page="login">
+                    <i class="fas fa-sign-in-alt block md:hidden text-lg"></i>
+                    <span class="hidden md:inline">登入</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="container mx-auto px-6 py-8">
+        <!-- Home Page Section -->
+        <section id="home" class="page-section">
+            <div class="hero-bg text-white py-20 px-10 rounded-xl shadow-lg text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">重新連結，共創價值</h1>
+                <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+                    無論是昔日同窗、職場夥伴，還是興趣相投的夥伴，都能在這裡輕鬆找到彼此，拓展您的人脈網絡，發現更多可能性。
+                </p>
+                <button onclick="navigateTo('browse')" class="btn-primary text-lg px-8 py-3">開始探索社群</button>
+            </div>
+
+            <div class="mt-16">
+                <h2 class="text-3xl font-semibold text-center text-gray-800 mb-12">核心功能</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="card p-6 text-center">
+                        <i class="fas fa-graduation-cap text-4xl text-indigo-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">尋找校友</h3>
+                        <p class="text-gray-600">快速找到同校、同屆、同班的同學，重溫校園時光。</p>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <i class="fas fa-users-cog text-4xl text-teal-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">連結同好/同事</h3>
+                        <p class="text-gray-600">根據興趣、職業、公司，精準匹配志同道合的夥伴。</p>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <i class="fas fa-calendar-alt text-4xl text-pink-500 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-2">發起活動</h3>
+                        <p class="text-gray-600">輕鬆揪團，舉辦同學會、聚餐、戶外活動等。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Browse Communities Section -->
+        <section id="browse" class="page-section hidden">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-8">瀏覽社群</h2>
+            <div class="mb-8 p-6 bg-white rounded-xl shadow">
+                <h3 class="text-xl font-medium text-gray-700 mb-4">篩選條件</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700">社群類型</label>
+                        <select id="category" name="category" class="form-input">
+                            <option>所有類型</option>
+                            <option>校友會</option>
+                            <option>興趣同好</option>
+                            <option>職場交流</option>
+                            <option>專業社團</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700">地區</label>
+                        <input type="text" name="location" id="location" placeholder="例如：台北市" class="form-input">
+                    </div>
+                    <div>
+                        <label for="keywords" class="block text-sm font-medium text-gray-700">關鍵字</label>
+                        <input type="text" name="keywords" id="keywords" placeholder="例如：攝影、籃球、AI" class="form-input">
+                    </div>
+                    <button class="self-end btn-primary py-2.5">搜尋</button>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card overflow-hidden">
+                    <img src="https://placehold.co/600x400/667eea/ffffff?text=Groups" alt="社群圖片"
+                        class="w-full h-48 object-cover"
+                        onerror="this.src='https://placehold.co/600x400/cccccc/ffffff?text=Image+Not+Found'">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">國立成功大學 95級 校友會</h3>
+                        <p class="text-gray-600 text-sm mb-3"><i class="fas fa-map-marker-alt mr-1"></i> 全台各地</p>
+                        <p class="text-gray-700 mb-4 text-sm leading-relaxed">
+                            連結成大95級畢業校友，定期舉辦聚會與交流活動，分享生活與職涯點滴。
+                        </p>
+                        <div class="mb-4">
+                            <span class="tag mr-2">#校友</span>
+                            <span class="tag mr-2">#成功大學</span>
+                            <span class="tag">#95級</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500"><i class="fas fa-users mr-1"></i> 1250 位成員</span>
+                            <button
+                                onclick="navigateTo('community-example', { name: '國立成功大學 95級 校友會', members: 1250, type: '校友會', description: '連結成大95級畢業校友，定期舉辦聚會與交流活動，分享生活與職涯點滴。', image: 'https://placehold.co/600x400/667eea/ffffff?text=校友會聚會' })"
+                                class="btn-primary text-sm px-4 py-1.5">查看社群</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card overflow-hidden">
+                    <img src="https://placehold.co/600x400/764ba2/ffffff?text=Groups" alt="社群圖片"
+                        class="w-full h-48 object-cover"
+                        onerror="this.src='https://placehold.co/600x400/cccccc/ffffff?text=Image+Not+Found'">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">台北攝影愛好者交流</h3>
+                        <p class="text-gray-600 text-sm mb-3"><i class="fas fa-map-marker-alt mr-1"></i> 台北市</p>
+                        <p class="text-gray-700 mb-4 text-sm leading-relaxed">
+                            專為台北地區攝影愛好者設立，分享作品、交流技巧、相約外拍。
+                        </p>
+                        <div class="mb-4">
+                            <span class="tag mr-2">#攝影</span>
+                            <span class="tag mr-2">#興趣</span>
+                            <span class="tag">#台北</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500"><i class="fas fa-users mr-1"></i> 870 位成員</span>
+                            <button
+                                onclick="navigateTo('community-example', { name: '台北攝影愛好者交流', members: 870, type: '興趣同好', description: '專為台北地區攝影愛好者設立，分享作品、交流技巧、相約外拍。', image: 'https://placehold.co/600x400/764ba2/ffffff?text=攝影愛好者' })"
+                                class="btn-primary text-sm px-4 py-1.5">查看社群</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card overflow-hidden">
+                    <img src="https://placehold.co/600x400/38a169/ffffff?text=Groups" alt="社群圖片"
+                        class="w-full h-48 object-cover"
+                        onerror="this.src='https://placehold.co/600x400/cccccc/ffffff?text=Image+Not+Found'">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">科技業產品經理 (PM) 討論區</h3>
+                        <p class="text-gray-600 text-sm mb-3"><i class="fas fa-map-marker-alt mr-1"></i> 線上</p>
+                        <p class="text-gray-700 mb-4 text-sm leading-relaxed">
+                            提供科技業PM交流的平台，討論產品策略、市場趨勢、職涯發展。
+                        </p>
+                        <div class="mb-4">
+                            <span class="tag mr-2">#PM</span>
+                            <span class="tag mr-2">#科技業</span>
+                            <span class="tag">#職場</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500"><i class="fas fa-users mr-1"></i> 2300 位成員</span>
+                            <button
+                                onclick="navigateTo('community-example', { name: '科技業產品經理 (PM) 討論區', members: 2300, type: '職場交流', description: '提供科技業PM交流的平台，討論產品策略、市場趨勢、職涯發展。', image: 'https://placehold.co/600x400/38a169/ffffff?text=科技業PM' })"
+                                class="btn-primary text-sm px-4 py-1.5">查看社群</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Example Section -->
+        <section id="community-example" class="page-section hidden">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="relative">
+                    <img id="community-banner" src="https://placehold.co/1200x400/9f7aea/ffffff?text=Social Group"
+                        alt="社群橫幅" class="w-full h-64 object-cover"
+                        onerror="this.src='https://placehold.co/1200x400/cccccc/ffffff?text=Image+Not+Found'">
+                    <div class="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black/70 to-transparent w-full">
+                        <h2 id="community-name" class="text-3xl md:text-4xl font-bold text-white">社群名稱範例</h2>
+                        <p id="community-meta" class="text-gray-200 text-sm"><i class="fas fa-users mr-1"></i> <span
+                                id="community-members-count">0</span> 位成員 <span class="mx-2">|</span> <i
+                                class="fas fa-tag mr-1"></i> <span id="community-type-tag">社群類型</span></p>
+                    </div>
+                </div>
+                <div class="p-6 md:p-8">
+                    <div class="md:flex md:space-x-8">
+                        <div class="md:w-1/3 mb-8 md:mb-0">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-3">社群簡介</h3>
+                            <p id="community-description" class="text-gray-700 mb-6 leading-relaxed">
+                                這是社群的詳細介紹文字，說明社群的宗旨、活動內容等。
+                            </p>
+                            <button class="btn-primary w-full mb-3 text-lg">
+                                <i class="fas fa-plus-circle mr-2"></i> 加入社群
+                            </button>
+                            <button class="btn-secondary w-full text-lg">
+                                <i class="fas fa-share-alt mr-2"></i> 分享社群
+                            </button>
+                            <div class="mt-8">
+                                <h4 class="text-lg font-semibold text-gray-800 mb-3">管理員</h4>
+                                <div class="flex items-center space-x-3">
+                                    <img src="https://placehold.co/100x100/cbd5e0/4a5568?text=WDM" alt="管理員頭像"
+                                        class="w-12 h-12 rounded-full"
+                                        onerror="this.src='https://placehold.co/100x100/cccccc/ffffff?text=Admin'">
+                                    <div>
+                                        <p class="font-medium text-gray-700">王大明</p>
+                                        <p class="text-sm text-gray-500">社群創建者</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:w-2/3">
+                            <div class="mb-6 border-b border-gray-200">
+                                <nav class="-mb-px flex space-x-6 overflow-x-auto pb-1" aria-label="Tabs">
+                                    <a href="#"
+                                        class="community-tab active text-indigo-600 border-indigo-500 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm"
+                                        data-tab="posts">
+                                        <i class="fas fa-bullhorn mr-1"></i> 貼文
+                                    </a>
+                                    <a href="#"
+                                        class="community-tab text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm"
+                                        data-tab="events">
+                                        <i class="fas fa-calendar-check mr-1"></i> 活動
+                                    </a>
+                                    <a href="#"
+                                        class="community-tab text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm"
+                                        data-tab="members">
+                                        <i class="fas fa-user-friends mr-1"></i> 成員
+                                    </a>
+                                    <a href="#"
+                                        class="community-tab text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm"
+                                        data-tab="albums">
+                                        <i class="fas fa-images mr-1"></i> 相簿
+                                    </a>
+                                </nav>
+                            </div>
+                            <div id="tab-posts" class="tab-content">
+                                <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                                    <textarea class="form-input" rows="3" placeholder="分享您的新鮮事..."></textarea>
+                                    <div class="mt-2 text-right">
+                                        <button class="btn-primary text-sm px-4 py-1.5">發布</button>
+                                    </div>
+                                </div>
+                                <div class="card p-4 mb-4">
+                                    <div class="flex items-start space-x-3">
+                                        <img src="https://placehold.co/80x80/e2e8f0/4a5568?text=A" alt="User Avatar"
+                                            class="w-10 h-10 rounded-full"
+                                            onerror="this.src='https://placehold.co/80x80/cccccc/ffffff?text=U'">
+                                        <div>
+                                            <p class="font-semibold text-gray-700">陳小美</p>
+                                            <p class="text-xs text-gray-500">2 小時前</p>
+                                        </div>
+                                    </div>
+                                    <p class="mt-3 text-gray-700">
+                                        大家好！很高興加入這個社群，期待與大家多多交流！🎉
+                                    </p>
+                                    <div class="mt-3 flex space-x-4 text-sm text-gray-500">
+                                        <button class="hover:text-indigo-600"><i class="fas fa-thumbs-up mr-1"></i> 讚
+                                            (12)</button>
+                                        <button class="hover:text-indigo-600"><i class="fas fa-comment mr-1"></i> 留言
+                                            (3)</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab-events" class="tab-content hidden"> (內容同前，省略以縮短篇幅) </div>
+                            <div id="tab-members" class="tab-content hidden"> (內容同前，省略以縮短篇幅) </div>
+                            <div id="tab-albums" class="tab-content hidden"> (內容同前，省略以縮短篇幅) </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Page Section -->
+        <section id="profile" class="page-section hidden">
+            <!-- Profile Header -->
+            <div class="card profile-header-card mb-8 shadow-lg">
+                <div class="profile-cover"
+                    style="background-image: url('https://placehold.co/1200x400/a0aec0/ffffff?text=Profile');"
+                    onerror="this.style.backgroundImage='url(https://placehold.co/1200x400/cccccc/ffffff?text=Cover+Not+Found)'">
+                </div>
+                <div class="px-6 pb-6">
+                    <div class="flex flex-col sm:flex-row items-center sm:items-end">
+                        <img src="https://placehold.co/150x150/e2e8f0/333333?text=CYJ" alt="個人頭像" class="profile-avatar"
+                            onerror="this.src='https://placehold.co/150x150/cccccc/ffffff?text=Avatar'">
+                        <div class="sm:ml-6 mt-4 sm:mt-0 text-center sm:text-left">
+                            <h1 class="text-3xl font-bold text-gray-800">陳怡君</h1>
+                            <p class="text-gray-600">熱愛旅遊與攝影的軟體工程師 | 台北</p>
+                        </div>
+                        <div class="mt-4 sm:mt-0 sm:ml-auto flex space-x-2">
+                            <button class="btn-primary px-4 py-1.5 text-sm"><i class="fas fa-user-plus mr-1"></i>
+                                加為好友</button>
+                            <button class="btn-secondary px-4 py-1.5 text-sm"><i class="fas fa-envelope mr-1"></i>
+                                發送訊息</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Profile Navigation -->
+                <nav class="border-t border-gray-200">
+                    <div class="container mx-auto px-6 flex overflow-x-auto">
+                        <a href="#" class="profile-nav-link active" data-profile-tab="posts">貼文</a>
+                        <a href="#" class="profile-nav-link" data-profile-tab="about">關於我</a>
+                        <a href="#" class="profile-nav-link" data-profile-tab="friends">好友 (128)</a>
+                        <a href="#" class="profile-nav-link" data-profile-tab="photos">相簿</a>
+                        <a href="#" class="profile-nav-link" data-profile-tab="communities">社群 (15)</a>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Profile Content Area -->
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Main Content (Posts Feed) -->
+                <div class="w-full lg:w-2/3">
+                    <div id="profile-tab-posts" class="profile-tab-content">
+                        <!-- Create Post Card -->
+                        <div class="card p-4 mb-6">
+                            <textarea
+                                class="form-input w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                                rows="3" placeholder="分享您的近況，怡君..."></textarea>
+                            <div class="mt-3 flex justify-between items-center">
+                                <div class="flex space-x-3 text-gray-500">
+                                    <button class="hover:text-indigo-600"><i class="fas fa-image"></i> 照片/影片</button>
+                                    <button class="hover:text-indigo-600"><i class="fas fa-user-tag"></i> 標註朋友</button>
+                                    <button class="hover:text-indigo-600"><i class="fas fa-map-marker-alt"></i>
+                                        打卡</button>
+                                </div>
+                                <button class="btn-primary px-6 py-2 text-sm">發布</button>
+                            </div>
+                        </div>
+
+                        <!-- Sample Post 1 on Profile -->
+                        <div class="card p-4 mb-6">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <img src="https://placehold.co/150x150/e2e8f0/333333?text=CYJ" alt="User Avatar"
+                                    class="w-12 h-12 rounded-full"
+                                    onerror="this.src='https://placehold.co/80x80/cccccc/ffffff?text=U'">
+                                <div>
+                                    <p class="font-semibold text-gray-800">陳怡君</p>
+                                    <p class="text-xs text-gray-500">3 小時前 · <i class="fas fa-globe-asia"></i> 公開</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 mb-3">
+                                週末去了陽明山踏青，天氣真好！空氣清新，風景優美，充飽電準備迎接新的一週！☀️ #週末愉快 #陽明山 #大自然
+                            </p>
+                            <img src="https://travel.epochtimes.com/uploaded_files/2017/1-10/04f17db805d456e027a11a77950aa452-600x400.jpg"
+                                alt="陽明山風景" class="w-full rounded-lg mb-3"
+                                onerror="this.src='https://placehold.co/600x400/cccccc/ffffff?text=Landscape'">
+                            <div class="flex justify-between items-center text-sm text-gray-500">
+                                <span class="hover:text-indigo-600 cursor-pointer"><i class="fas fa-thumbs-up mr-1"></i>
+                                    58 讚</span>
+                                <span class="hover:text-indigo-600 cursor-pointer"><i class="fas fa-comment mr-1"></i>
+                                    12 則留言</span>
+                                <span class="hover:text-indigo-600 cursor-pointer"><i class="fas fa-share mr-1"></i>
+                                    分享</span>
+                            </div>
+                        </div>
+
+                        <!-- Sample Post 2 on Profile -->
+                        <div class="card p-4 mb-6">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <img src="https://placehold.co/150x150/e2e8f0/333333?text=CYJ" alt="User Avatar"
+                                    class="w-12 h-12 rounded-full"
+                                    onerror="this.src='https://placehold.co/80x80/cccccc/ffffff?text=U'">
+                                <div>
+                                    <p class="font-semibold text-gray-800">陳怡君</p>
+                                    <p class="text-xs text-gray-500">1 天前 · <i class="fas fa-users"></i> 好友</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">
+                                剛剛完成了一個具有挑戰性的專案，感謝團隊夥伴們的努力！學習到很多，也很有成就感。💪 #工作日常 #團隊合作 #里程碑達成
+                            </p>
+                            <div class="mt-3 flex justify-between items-center text-sm text-gray-500">
+                                <span class="hover:text-indigo-600 cursor-pointer"><i class="fas fa-thumbs-up mr-1"></i>
+                                    32 讚</span>
+                                <span class="hover:text-indigo-600 cursor-pointer"><i class="fas fa-comment mr-1"></i> 5
+                                    則留言</span>
+                                <span class="hover:text-indigo-600 cursor-pointer"><i class="fas fa-share mr-1"></i>
+                                    分享</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="profile-tab-about" class="profile-tab-content hidden card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">關於 陳怡君</h3>
+                        <div class="space-y-3">
+                            <p><strong class="font-medium text-gray-700">職稱：</strong> 軟體工程師</p>
+                            <p><strong class="font-medium text-gray-700">公司：</strong> 創意科技股份有限公司</p>
+                            <p><strong class="font-medium text-gray-700">學歷：</strong> 國立台灣大學 資訊工程學系</p>
+                            <p><strong class="font-medium text-gray-700">地點：</strong> 台灣，台北市</p>
+                            <p><strong class="font-medium text-gray-700">興趣：</strong> 旅遊、攝影、登山、閱讀、電影</p>
+                            <p><strong class="font-medium text-gray-700">個人簡介：</strong>
+                                一位對新科技充滿熱情，喜歡透過程式碼解決問題的工程師。閒暇時喜歡背起行囊探索世界，用鏡頭記錄生活中的美好時刻。深信持續學習與分享是成長的關鍵。</p>
+                        </div>
+                    </div>
+                    <div id="profile-tab-friends" class="profile-tab-content hidden card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">好友 (128)</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            <!-- Sample Friend -->
+                            <div class="text-center">
+                                <img src="https://placehold.co/100x100/fed7e2/97266d?text=Friends 1" alt="好友頭像"
+                                    class="w-20 h-20 rounded-full mx-auto mb-1"
+                                    onerror="this.src='https://placehold.co/100x100/cccccc/ffffff?text=F'">
+                                <p class="text-sm font-medium text-gray-700">王小明</p>
+                            </div>
+                            <div class="text-center">
+                                <img src="https://placehold.co/100x100/c6f6d5/2f855a?text=Friends 2" alt="好友頭像"
+                                    class="w-20 h-20 rounded-full mx-auto mb-1"
+                                    onerror="this.src='https://placehold.co/100x100/cccccc/ffffff?text=F'">
+                                <p class="text-sm font-medium text-gray-700">林美麗</p>
+                            </div>
+                            <!-- Add more friends -->
+                        </div>
+                    </div>
+                    <div id="profile-tab-photos" class="profile-tab-content hidden card p-6"> (相簿內容可參考社群範例頁，此處為示意)
+                    </div>
+                    <div id="profile-tab-communities" class="profile-tab-content hidden card p-6">
+                        (已加入社群列表可參考瀏覽社群頁的卡片樣式，此處為示意) </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="w-full lg:w-1/3 space-y-6">
+                    <div class="card p-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">關於我</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            熱愛旅遊與攝影的軟體工程師，目前在台北工作。喜歡探索新事物，期待與更多有趣的人交流！
+                        </p>
+                        <button class="text-sm text-indigo-600 hover:underline mt-2"
+                            onclick="switchProfileTabJS('about')">查看更多</button>
+                    </div>
+                    <div class="card p-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">我的好友 (128)</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <img src="https://placehold.co/80x80/fed7e2/97266d?text=Friends A" alt="好友頭像"
+                                class="w-full h-auto rounded-lg object-cover aspect-square"
+                                onerror="this.src='https://placehold.co/80x80/cccccc/ffffff?text=F'">
+                            <img src="https://placehold.co/80x80/c6f6d5/2f855a?text=Friends B" alt="好友頭像"
+                                class="w-full h-auto rounded-lg object-cover aspect-square"
+                                onerror="this.src='https://placehold.co/80x80/cccccc/ffffff?text=F'">
+                            <img src="https://placehold.co/80x80/faf089/975a16?text=Friends C" alt="好友頭像"
+                                class="w-full h-auto rounded-lg object-cover aspect-square"
+                                onerror="this.src='https://placehold.co/80x80/cccccc/ffffff?text=F'">
+                            <!-- Add more friend thumbnails -->
+                        </div>
+                        <button class="text-sm text-indigo-600 hover:underline mt-2"
+                            onclick="switchProfileTabJS('friends')">查看全部好友</button>
+                    </div>
+                    <div class="card p-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">我加入的社群 (15)</h3>
+                        <!-- Sample joined community item -->
+                        <div class="flex items-center space-x-3 mb-2 hover:bg-gray-100 p-2 rounded-lg cursor-pointer">
+                            <img src="https://placehold.co/50x50/667eea/ffffff?text=S1" alt="社群Logo"
+                                class="w-10 h-10 rounded-lg"
+                                onerror="this.src='https://placehold.co/50x50/cccccc/ffffff?text=C'">
+                            <div>
+                                <p class="font-medium text-sm text-gray-700">台北攝影愛好者</p>
+                                <p class="text-xs text-gray-500">870 位成員</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 mb-2 hover:bg-gray-100 p-2 rounded-lg cursor-pointer">
+                            <img src="https://placehold.co/50x50/38a169/ffffff?text=S2" alt="社群Logo"
+                                class="w-10 h-10 rounded-lg"
+                                onerror="this.src='https://placehold.co/50x50/cccccc/ffffff?text=C'">
+                            <div>
+                                <p class="font-medium text-sm text-gray-700">科技業PM討論區</p>
+                                <p class="text-xs text-gray-500">2300 位成員</p>
+                            </div>
+                        </div>
+                        <button class="text-sm text-indigo-600 hover:underline mt-2"
+                            onclick="switchProfileTabJS('communities')">查看所有社群</button>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- Login Page Section -->
+        <section id="login" class="page-section hidden">
+            <div class="max-w-md mx-auto mt-8 md:mt-16">
+                <div class="card p-8">
+                    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">會員登入</h2>
+                    <form action="#" method="POST">
+                        <div class="mb-4">
+                            <label for="login-email" class="block text-sm font-medium text-gray-700">電子郵件或手機號碼</label>
+                            <input type="text" name="login-email" id="login-email" autocomplete="email" required
+                                class="form-input" placeholder="your@example.com">
+                        </div>
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center">
+                                <label for="login-password" class="block text-sm font-medium text-gray-700">密碼</label>
+                                <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500">忘記密碼？</a>
+                            </div>
+                            <input type="password" name="login-password" id="login-password"
+                                autocomplete="current-password" required class="form-input" placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="w-full btn-primary py-2.5 text-lg">登入</button>
+                    </form>
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">
+                            還沒有帳號嗎？ <a href="#" data-page="register" onclick="navigateTo('register'); return false;"
+                                class="font-medium text-indigo-600 hover:text-indigo-500">立即註冊</a>
+                        </p>
+                    </div>
+                    <div class="mt-6">
+                        <div class="relative">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-300"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-white text-gray-500">或使用其他方式登入</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 grid grid-cols-3 gap-3">
+                            <div>
+                                <a href="#"
+                                    class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Sign in with Facebook</span>
+                                    <i class="fab fa-facebook-f text-xl text-blue-600"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="#"
+                                    class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Sign in with Google</span>
+                                    <i class="fab fa-google text-xl text-red-500"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="#"
+                                    class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Sign in with Line</span>
+                                    <i class="fab fa-line text-xl text-green-500"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registration Page Section -->
+        <section id="register" class="page-section hidden">
+            <div class="max-w-md mx-auto mt-8 md:mt-16">
+                <div class="card p-8">
+                    <h2 class="text-3xl font-semibold text-center text-gray-800 mb-8">建立新帳號</h2>
+                    <form action="#" method="POST">
+                        <div class="mb-4">
+                            <label for="register-name" class="block text-sm font-medium text-gray-700">您的姓名</label>
+                            <input type="text" name="register-name" id="register-name" autocomplete="name" required
+                                class="form-input" placeholder="王大明">
+                        </div>
+                        <div class="mb-4">
+                            <label for="register-email" class="block text-sm font-medium text-gray-700">電子郵件</label>
+                            <input type="email" name="register-email" id="register-email" autocomplete="email" required
+                                class="form-input" placeholder="your@example.com">
+                        </div>
+                        <div class="mb-4">
+                            <label for="register-phone" class="block text-sm font-medium text-gray-700">手機號碼
+                                (選填)</label>
+                            <input type="tel" name="register-phone" id="register-phone" autocomplete="tel"
+                                class="form-input" placeholder="0912345678">
+                        </div>
+                        <div class="mb-4">
+                            <label for="register-password" class="block text-sm font-medium text-gray-700">設定密碼</label>
+                            <input type="password" name="register-password" id="register-password"
+                                autocomplete="new-password" required class="form-input" placeholder="至少8個字元">
+                        </div>
+                        <div class="mb-6">
+                            <label for="register-confirm-password"
+                                class="block text-sm font-medium text-gray-700">確認密碼</label>
+                            <input type="password" name="register-confirm-password" id="register-confirm-password"
+                                autocomplete="new-password" required class="form-input" placeholder="再次輸入密碼">
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex items-center">
+                                <input id="agree-terms" name="agree-terms" type="checkbox" required
+                                    class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                <label for="agree-terms" class="ml-2 block text-sm text-gray-900">
+                                    我已閱讀並同意<a href="#"
+                                        class="font-medium text-indigo-600 hover:text-indigo-500">服務條款</a>及<a href="#"
+                                        class="font-medium text-indigo-600 hover:text-indigo-500">隱私權政策</a>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full btn-primary py-2.5 text-lg">註冊帳號</button>
+                    </form>
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">
+                            已經有帳號了嗎？ <a href="#" data-page="login" onclick="navigateTo('login'); return false;"
+                                class="font-medium text-indigo-600 hover:text-indigo-500">前往登入</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 mt-16">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-2xl font-bold mb-2">社群連結</p>
+            <p class="mb-6 text-gray-400">快速連結同學、同好、同事，促進交流與生機。</p>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter text-xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+            </div>
+            <p class="text-sm text-gray-500">&copy; 2025 社群連結 App Demo. All rights reserved.</p>
+            <p class="text-xs text-gray-600 mt-1">這是一個概念展示網站，並非實際運作的應用程式。</p>
+        </div>
+    </footer>
+
+    <script>
+        const pageSections = document.querySelectorAll('.page-section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const communityTabs = document.querySelectorAll('.community-tab');
+        const communityTabContents = document.querySelectorAll('.tab-content');
+        const profileNavLinks = document.querySelectorAll('.profile-nav-link');
+        const profileTabContents = document.querySelectorAll('.profile-tab-content');
+
+        function navigateTo(pageId, data = null) {
+            pageSections.forEach(section => section.classList.add('hidden'));
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                window.scrollTo(0, 0);
+            }
+
+            navLinks.forEach(link => {
+                link.classList.remove('active-nav-link');
+                if (link.dataset.page === pageId &&
+                    !link.classList.contains('btn-secondary') &&
+                    !link.classList.contains('btn-primary') &&
+                    link.getAttribute('href') !== '#home') {
+                    link.classList.add('active-nav-link');
+                }
+            });
+
+            document.querySelector('.nav-link[data-page="home"]:not(.btn-secondary):not(.btn-primary):not([href="#home"])')
+                .classList.toggle('active-nav-link', pageId === 'home');
+            const profileNavLinkInHeader = document.querySelector('.nav-link[data-page="profile"]');
+            if (profileNavLinkInHeader) {
+                profileNavLinkInHeader.classList.toggle('active-nav-link', pageId === 'profile');
+            }
+
+            if (pageId === 'community-example' && data) {
+                document.getElementById('community-name').textContent = data.name || '社群名稱範例';
+                document.getElementById('community-members-count').textContent = data.members || 0;
+                document.getElementById('community-members-count-tab').textContent = data.members || 0;
+                document.getElementById('community-type-tag').textContent = data.type || '社群類型';
+                document.getElementById('community-description').textContent = data.description || '這是社群的詳細介紹文字...';
+                const bannerImg = document.getElementById('community-banner');
+                bannerImg.src = data.image || 'https://placehold.co/1200x400/9f7aea/ffffff?text=社群橫幅';
+                bannerImg.onerror = function () {
+                    this.src = 'https://placehold.co/1200x400/cccccc/ffffff?text=Image+Not+Found';
+                };
+                switchCommunityTab('posts');
+            }
+
+            if (pageId === 'profile') {
+                // Default to 'posts' tab on profile page
+                switchProfileTabJS('posts');
+            }
+        }
+
+        function switchCommunityTab(tabId) {
+            communityTabContents.forEach(content => content.classList.add('hidden'));
+            const targetTabContent = document.getElementById('tab-' + tabId);
+            if (targetTabContent) targetTabContent.classList.remove('hidden');
+
+            communityTabs.forEach(tab => {
+                tab.classList.remove('active', 'text-indigo-600', 'border-indigo-500');
+                tab.classList.add('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                if (tab.dataset.tab === tabId) {
+                    tab.classList.add('active', 'text-indigo-600', 'border-indigo-500');
+                    tab.classList.remove('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                }
+            });
+        }
+
+        function switchProfileTabJS(tabId) {
+            profileTabContents.forEach(content => content.classList.add('hidden'));
+            const targetTabContent = document.getElementById('profile-tab-' + tabId);
+            if (targetTabContent) targetTabContent.classList.remove('hidden');
+
+            profileNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.profileTab === tabId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const pageId = link.dataset.page;
+                if (pageId) {
+                    e.preventDefault();
+                    navigateTo(pageId);
+                }
+            });
+        });
+
+        communityTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchCommunityTab(tab.dataset.tab);
+            });
+        });
+
+        profileNavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchProfileTabJS(link.dataset.profileTab);
+            });
+        });
+
+        // Initialize: show home page by default
+        navigateTo('home');
+    </script>
+</body>
+
+</html>
